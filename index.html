@@ -123,7 +123,7 @@
 
     function getYesNo(msg){
       const txt = msg.toLowerCase();
-      if(txt.includes('engaño') || txt.includes('engañaron')) return 'No.';
+      if(txt.includes('engaño') || txt.includes('engañaron')|| txt.includes('engaña') || txt.includes('engañó')) return 'No.';
       if(hasName(msg)) return 'Sí.';
       return null;
     }
