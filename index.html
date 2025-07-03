@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TarotVía — Chatbot Demo</title>
+  <style>
+    :root {
+      --bg: #222831;
+      --primary: #00adb5;
+      --text: #eeeeee;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      height: 100vh;
+    }
+    .chat {
+      width: 90%;
+      max-width: 420px;
+      background: #393e46;
+      border-radius: 16px;
+      box-shadow: 0 15px 30px rgba(0,0,0,.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    header {
+      background: var(--primary);
+      padding: 1rem;
+      text-align: center;
+      font-weight: 600;
+    }
+    #log {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    .msg {
+      margin: .5rem 0;
+      line-height: 1.4;
+    }
+    .bot {
+      color: var(--primary);
+    }
+    form {
+      display: flex;
+      border-top: 1px solid #2f333a;
+    }
+    input {
+      flex: 1;
+      border: none;
+      padding: .75rem;
+      font-size: 1rem;
+      background: #2f333a;
+      color: var(--text);
+    }
+    button {
+      background: var(--primary);
+      border: none;
+      padding: 0 1.25rem;
+      font-size: 1.2rem;
+      color: var(--bg);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat">
+    <header>TarotVía • Oráculo Beta</header>
+    <div id="log"></div>
+    <form id="form">
+      <input id="inp" autocomplete="off" placeholder="Haz tu pregunta…" />
+      <button type="submit">⏎</button>
+    </form>
+  </div>
+
+  <script>
+    // --- utilidades ---
+    const escape = (str) => str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
+    const log = document.getElementById('log');
+    function addMsg(text, cls){
+      const p = document.createElement('p');
+      p.className = 'msg ' + cls;
+      p.innerHTML = escape(text);
+      log.appendChild(p);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    // --- respuestas simples ---
+    const RESP = {
+      amor: [
+        'El Dos de Copas susurra que un vínculo sincero florecerá cuando primero te escuches.',
+        'La Reina de Bastos te anima a confiar en tu magnetismo natural, pero sin perder tu centro.',
+        'El Tarot muestra que el amor empieza por tu propio espejo: regálate ternura hoy.'
+      ],
+      trabajo: [
+        'El Ocho de Pentáculos indica que tu constancia pronto dará frutos visibles.',
+        'El Ermitaño te invita a revisar tus metas: ¿trabajas para tu luz o para la de otros?',
+        'La Sota de Oros trae aprendizaje: un curso o mentor marcará la diferencia.'
+      ],
+      salud: [
+        'El As de Copas: hidrátate, descansa, y tu energía se renovará como agua fresca.',
+        'El Cuatro de Espadas pide pausa: tu cuerpo merece silencio y sueño reparador.',
+        'La Estrella augura recuperación si nutres tu cuerpo y tu espíritu con amor.'
+      ],
+      default: [
+        'Barajo las cartas… y me dicen que formules tu pregunta con claridad y fe ✨',
+        'El Tarot responde mejor cuando tu intención es nítida. ¿Qué deseas conocer realmente?',
+        'La Sacerdotisa guarda silencio. Tal vez la respuesta está ya dentro de ti.'
+      ]
+    };
+    function getReply(msg){
+      const m = msg.toLowerCase();
+      if(m.includes('amor')) return rand(RESP.amor);
+      if(m.includes('trabajo')||m.includes('pega')) return rand(RESP.trabajo);
+      if(m.includes('salud')) return rand(RESP.salud);
+      return rand(RESP.default);
+    }
+    const rand = arr => arr[Math.floor(Math.random()*arr.length)];
+
+    // --- manejo del formulario ---
+    document.getElementById('form').addEventListener('submit', e=>{
+      e.preventDefault();
+      const txt = inp.value.trim();
+      if(!txt) return;
+      addMsg(txt,'user');
+      inp.value='';
+      // Simular latencia
+      setTimeout(()=>addMsg(getReply(txt),'bot'), 600);
+    });
+  </script>
+</body>
+</html>
