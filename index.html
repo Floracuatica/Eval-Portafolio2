@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TarotVía — Chatbot Demo</title>
+  <title>TarotVía — Chatbot Demo</title>
   <style>
     :root {
       --bg: #222831;
@@ -71,7 +71,7 @@
 </head>
 <body>
   <div class="chat">
-    <header>TarotVía • Oráculo Beta</header>
+    <header>TarotVía • Oráculo Beta</header>
     <div id="log"></div>
     <form id="form">
       <input id="inp" autocomplete="off" placeholder="Haz tu pregunta…" />
@@ -91,7 +91,7 @@
       log.scrollTop = log.scrollHeight;
     }
 
-    // --- respuestas simples ---
+    // --- respuestas ---
     const RESP = {
       amor: [
         'El Dos de Copas susurra que un vínculo sincero florecerá cuando primero te escuches.',
@@ -114,7 +114,24 @@
         'La Sacerdotisa guarda silencio. Tal vez la respuesta está ya dentro de ti.'
       ]
     };
+
+    // --- lógica principal ---
+    function hasName(msg){
+      const words = msg.trim().split(/\s+/).slice(1); // ignora la primera palabra
+      return words.some(w=>/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+$/.test(w));
+    }
+
+    function getYesNo(msg){
+      const txt = msg.toLowerCase();
+      if(txt.includes('engaño') || txt.includes('engañaron')) return 'No.';
+      if(hasName(msg)) return 'Sí.';
+      return null;
+    }
+
     function getReply(msg){
+      const yesNo = getYesNo(msg);
+      if(yesNo) return yesNo;
+
       const m = msg.toLowerCase();
       if(m.includes('amor')) return rand(RESP.amor);
       if(m.includes('trabajo')||m.includes('pega')) return rand(RESP.trabajo);
@@ -131,7 +148,7 @@
       addMsg(txt,'user');
       inp.value='';
       // Simular latencia
-      setTimeout(()=>addMsg(getReply(txt),'bot'), 600);
+      setTimeout(()=>addMsg(getReply(txt),'bot'), 500);
     });
   </script>
 </body>
